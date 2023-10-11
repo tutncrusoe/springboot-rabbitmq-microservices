@@ -21,6 +21,12 @@ public class RabbitMQConfig {
     @Value("${rabbitmq.queue.order.name}")
     private String orderQueue;
 
+    @Value("${rabbitmq.binding.email.routing.key}")
+    private String emailRoutingKey;
+
+    @Value("${rabbitmq.queue.email.name}")
+    private String emailQueue;
+
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(exchange);
@@ -32,11 +38,24 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue emailQueue() {
+        return new Queue(emailQueue);
+    }
+
+    @Bean
     public Binding binding() {
         return BindingBuilder
                 .bind(orderQueue())
                 .to(exchange())
                 .with(orderRoutingKey);
+    }
+
+    @Bean
+    public Binding emailBinding() {
+        return BindingBuilder
+                .bind(emailQueue())
+                .to(exchange())
+                .with(emailRoutingKey);
     }
 
     @Bean
